@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorting Algorithm visualizer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fa-solid fa-chart-simple"></i> Sorting Algo <span>visualizer</span>
+        </div>
+        <div class="controls">
+            <select id="dataType" class="data-dropdown">
+                <option value="random">Random</option>
+                <option value="reversed">Reversed</option>
+                <option value="nearly">Nearly Sorted</option>
+                <option value="few_unique">Few Unique</option>
+            </select>
+            <button class="btn-primary" id="generateBtn"><i class="fa-solid fa-rotate-right"></i> New</button>
+            <button class="btn-secondary" id="shuffleBtn"><i class="fa-solid fa-shuffle"></i> Shuffle</button>
+            <button class="btn-secondary" id="customInputBtn"><i class="fa-solid fa-keyboard"></i> Custom</button>
+            <button class="btn-danger" id="stopBtn" disabled><i class="fa-solid fa-stop"></i> Stop</button>
+            
+            <div class="slider-group">
+                <label for="size">Size (Max 150)</label>
+                <input type="range" id="size" min="5" max="150" value="10">
+            </div>
+            <div class="slider-group">
+                <label for="speed">Speed</label>
+                <input type="range" id="speed" min="1" max="100" value="80">
+            </div>
+            
+            <button class="btn-secondary" id="recommenderBtn"><i class="fa-solid fa-wand-magic-sparkles"></i> Guide</button>
+            <button class="btn-primary" id="compareBtn" style="background: var(--bar-sorted);"><i class="fa-solid fa-stopwatch"></i> Compare All</button>
+        </div>
+    </header>
+
+    <main>
+        <aside class="sidebar">
+            <h3>Algorithms</h3>
+            <div class="algo-buttons">
+                <button class="algo-btn" data-algo="bubble">Bubble Sort</button>
+                <button class="algo-btn" data-algo="selection">Selection Sort</button>
+                <button class="algo-btn" data-algo="insertion">Insertion Sort</button>
+                <button class="algo-btn" data-algo="merge">Merge Sort</button>
+                <button class="algo-btn" data-algo="quick">Quick Sort</button>
+                <button class="algo-btn" data-algo="heap">Heap Sort</button>
+            </div>
+            
+            <div class="metrics-panel">
+                <h3>Live Metrics</h3>
+                <div class="metric"><span>Algorithm:</span> <span id="currentAlgoDisplay">None</span></div>
+                <div class="metric"><span>Comparisons:</span> <span id="compCount">0</span></div>
+                <div class="metric"><span>Time Taken:</span> <span id="timeTaken">0.00</span> ms</div>
+                <button class="btn-info" id="infoBtn" disabled><i class="fa-solid fa-circle-info"></i> Details</button>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item"><span class="box default"></span> Unsorted</div>
+                <div class="legend-item"><span class="box compare"></span> Comparing</div>
+                <div class="legend-item"><span class="box pivot"></span> Pivot/Key</div>
+                <div class="legend-item"><span class="box sorted"></span> Sorted</div>
+            </div>
+        </aside>
+
+        <section class="stage">
+            <div id="visualizer-container"></div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="customInputModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('customInputModal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2>Enter Custom Array</h2>
+            <div class="form-group">
+                <input type="text" id="customDataInput" placeholder="10, 20, 30...">
+            </div>
+            <button class="btn-primary" style="width: 100%;" onclick="applyCustomData()">Apply</button>
+            <p id="customInputError" style="color: var(--bar-compare); margin-top: 10px; font-size: 0.8rem; display: none;">Invalid input.</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="infoModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('infoModal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2 id="modalTitle">Algorithm Name</h2>
+            <div class="complexities">
+                <div class="complexity-box"><h4>Time (Worst)</h4><p id="modalTimeWorst"></p></div>
+                <div class="complexity-box"><h4>Time (Best)</h4><p id="modalTimeBest"></p></div>
+                <div class="complexity-box"><h4>Space</h4><p id="modalSpace"></p></div>
+            </div>
+            <div class="modal-desc">
+                <h3>How it works:</h3><p id="modalDesc"></p>
+                <h3>Best Used When:</h3><p id="modalBestFor" class="success-text"></p>
+                <h3>Worst Used When:</h3><p id="modalWorstFor" class="danger-text"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="recommenderModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('recommenderModal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2>Algorithm Recommender</h2>
+            <div class="form-group">
+                <label>Input Data Size:</label>
+                <select id="recSize"><option value="small">Small</option><option value="large">Large</option></select>
+            </div>
+            <div class="form-group">
+                <label>Memory Constraints:</label>
+                <select id="recMem"><option value="strict">Strict</option><option value="flexible">Flexible</option></select>
+            </div>
+            <div class="form-group">
+                <label>Pre-sortedness:</label>
+                <select id="recData"><option value="random">Random</option><option value="nearly">Nearly Sorted</option></select>
+            </div>
+            <button class="btn-primary" style="width: 100%; margin-top: 15px;" onclick="getRecommendation()">Recommend</button>
+            <div id="recommendationResult" class="recommendation-result hidden">
+                <h3>Recommended: <span id="recResultName" style="color: var(--primary);"></span></h3>
+                <p id="recResultReason"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="benchmarkModal">
+        <div class="modal-content" style="width: 600px;">
+            <button class="close-btn" onclick="closeModal('benchmarkModal')"><i class="fa-solid fa-xmark"></i></button>
+            <h2>Algorithm Benchmark</h2>
+            <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">Benchmarking algorithms against the current array (Size: <span id="benchSizeInfo"></span>)</p>
+            <table class="bench-table">
+                <thead>
+                    <tr>
+                        <th>Algorithm</th>
+                        <th>Comparisons</th>
+                        <th>Execution Time (ms)</th>
+                    </tr>
+                </thead>
+                <tbody id="benchTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
