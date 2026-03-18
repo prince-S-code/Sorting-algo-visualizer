@@ -1,8 +1,8 @@
-# 📊 AlgoVis Pro | Practical Edition
+# 📊 Sorting Algo Visualizer
 
 **Live Demo:** [Click here to view the live project](https://prince-s-code.github.io/Sorting-algo-visualizer/)
 
-AlgoVis Pro is a robust, interactive web application designed to help developers and students visualize, understand, and benchmark sorting algorithms. Built entirely with HTML, CSS, and Vanilla JavaScript, it goes beyond standard visualization by offering real-time CPU benchmarking and an intelligent algorithm recommender.
+Sorting Algo Visualizer is a robust, interactive web application designed to help developers and students visualize, understand, and benchmark sorting algorithms. Built entirely with HTML, CSS, and Vanilla JavaScript, it goes beyond standard visualization by offering real-time CPU benchmarking and an intelligent algorithm recommender.
 
 ## ✨ Key Features
 
